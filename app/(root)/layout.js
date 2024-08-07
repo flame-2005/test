@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         {children}
         
         </MainContainer>
-        <RightSideBar/>
+        
         </main>
         <BottomBar/>
         </body>

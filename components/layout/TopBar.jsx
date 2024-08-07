@@ -7,17 +7,11 @@ import { SignOutButton, SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 
-
 const TopBar = () => {
-
-
-
-
   const router = useRouter();
   const [search, setSearch] = useState("");
 
   return  (
-    
     <div className="flex justify-between items-center mt-6">
       <div className="relative">
         <input
@@ -29,7 +23,7 @@ const TopBar = () => {
         />
         <Search
           className="search-icon"
-          onClick={() => router.push(`/search-post`)}
+          onClick={() => router.push(`/search/posts/${search}`)}
         />
       </div>
 
@@ -44,7 +38,7 @@ const TopBar = () => {
             <SignOutButton>
                 <div className='flex cursor-pointer gap-4 items-center'>
                     <Logout sx={{color:"white" , fontSize:"32px"}}/>
-                    <p className='text-body-bold text-light-1'>Log out</p>
+                    <p className='text-body-bold text-light-1'></p>
                 </div>
             </SignOutButton>
         </SignedIn>
