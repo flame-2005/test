@@ -17,21 +17,7 @@ export const sidebarLinks = [
     route: "/create-post",
     label: "Create Post",
   },
-  {
-    icon: <GroupOutlined sx={{ color: "white", fontSize: "26px" }} />,
-    route: "/people",
-    label: "People",
-  },
-  {
-    icon: <BookmarksOutlined sx={{ color: "white", fontSize: "26px" }} />,
-    route: "/saved-posts",
-    label: "Saved Posts",
-  },
-  {
-    icon: <FavoriteBorder sx={{ color: "white", fontSize: "26px" }} />,
-    route: "/liked-posts",
-    label: "Liked Posts",
-  },
+  
 ];
 
 export const pageTitles = [
