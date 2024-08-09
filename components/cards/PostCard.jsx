@@ -11,7 +11,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const PostCard = ({ post, creator, loggedInUser, update }) => {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
+  
 
   const getUser = async () => {
     const response = await fetch(`/api/user/${loggedInUser.id}`);
@@ -21,10 +22,7 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
 
   useEffect(() => {
     getUser();
-  }, []);
-
-  const isSaved = userData?.savedPosts?.find((item) => item._id === post._id);
-  const isLiked = userData?.likedPosts?.find((item) => item._id === post._id);
+  }, []); 
 
   const handleSave = async () => {
     const response = await fetch(
@@ -38,7 +36,7 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
     );
     const data = await response.json();
     setUserData(data);
-    update()
+    update();
   };
 
   const handleLike = async () => {
@@ -53,15 +51,18 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
     );
     const data = await response.json();
     setUserData(data);
-    update()
+    update();
   };
 
   const handleDelete = async () => {
     await fetch(`/api/post/${post._id}/${userData._id}`, {
       method: "DELETE",
     });
-    update()
-  }
+    update();
+  };
+
+  var isLiked = userData?.likedPosts?.some((item) => item._id === post._id);
+  let isSaved = userData?.savedPosts?.some((item) => item._id === post._id);
 
   return (
     <div className="w-full max-w-xl rounded-lg flex flex-col gap-4 bg-dark-1 p-5 max-sm:gap-2">
@@ -97,7 +98,7 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
         {post.caption}
       </p>
 
-      <Image
+      <img
         src={post.postPhoto}
         alt="post photo"
         width={200}
@@ -106,29 +107,44 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
       />
 
       <p className="text-base-semibold text-purple-1 max-sm:text-small-normal">
-        {post.tag}
+        #{post.tag}
       </p>
 
       <div className="flex justify-between">
         <div className="flex gap-2 items-center">
           {!isLiked ? (
-            <FavoriteBorder sx={{ color: "white", cursor: "pointer" }} onClick={() => handleLike()} />
+            <FavoriteBorder
+              sx={{ color: "white", cursor: "pointer" }}
+              onClick={handleLike}
+            />
           ) : (
-            <Favorite sx={{ color: "red", cursor: "pointer" }} onClick={() => handleLike()} />
+            <Favorite
+              sx={{ color: "red", cursor: "pointer" }}
+              onClick={handleLike}
+            />
           )}
           <p className="text-light-1">{post.likes.length}</p>
         </div>
 
         {loggedInUser.id !== creator.clerkId &&
           (isSaved ? (
-            <Bookmark sx={{ color: "purple", cursor: "pointer" }} onClick={() => handleSave()} />
+            <Bookmark
+              sx={{ color: "purple", cursor: "pointer" }}
+              onClick={handleSave}
+            />
           ) : (
-            <BookmarkBorder sx={{ color: "white", cursor: "pointer" }} onClick={() => handleSave()} />
+            <BookmarkBorder
+              sx={{ color: "white", cursor: "pointer" }}
+              onClick={handleSave}
+            />
           ))}
 
-          {loggedInUser.id === creator.clerkId && (
-            <Delete sx={{ color: "white", cursor: "pointer" }} onClick={() => handleDelete()} />
-          )}
+        {loggedInUser.id === creator.clerkId && (
+          <Delete
+            sx={{ color: "white", cursor: "pointer" }}
+            onClick={handleDelete}
+          />
+        )}
       </div>
     </div>
   );

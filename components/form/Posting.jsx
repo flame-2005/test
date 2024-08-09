@@ -127,14 +127,20 @@ const Posting = ({ post, apiEndpoint }) => {
 
       <div>
         <label htmlFor="tag" className="text-light-1">
-          Tag
+          club
         </label>
-        <input
+        <select
           {...register("tag", { required: "Tag is required" })}
           type="text"
           placeholder="#tag"
           className="w-full input"
-        />
+        >
+          <option value="fire">fire</option>
+          <option value="ice">ice</option>
+          <option value="water">water</option>
+          <option value="earth">earth</option>
+          <option value="cloud">cloud</option>
+        </select>
 
         {errors.tag && <p className="text-red-500">{errors.tag.message}</p>}
       </div>

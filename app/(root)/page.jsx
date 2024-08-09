@@ -19,6 +19,8 @@ const Home = () => {
     setLoading(false);
   };
 
+  
+
   useEffect(() => {
     getFeedPost()
   }, []);
