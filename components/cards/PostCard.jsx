@@ -6,63 +6,104 @@ import {
   Favorite,
   FavoriteBorder,
 } from "@mui/icons-material";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const PostCard = ({ post, creator, loggedInUser, update }) => {
-  const [userData, setUserData] = useState(null);
-  
+  const [like, setLike] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [userData, setUserData] = useState(null); // Initial state is null
 
+  // Fetch user data function
   const getUser = async () => {
-    const response = await fetch(`/api/user/${loggedInUser.id}`);
-    const data = await response.json();
-    setUserData(data);
+    try {
+      const response = await fetch(`/api/user/${loggedInUser.id}`);
+      const data = await response.json();
+      console.log("Fetched user data:", data); // Log the fetched user data for debugging
+      setUserData(data);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
   };
 
+  // Use useEffect to fetch the user data on component mount
   useEffect(() => {
     getUser();
-  }, []); 
+  }, []);
 
+  // Set the like and saved states based on the fetched userData
+  useEffect(() => {
+    if (userData) {
+      if (userData.likedPosts?.some((item) => String(item) === String(post._id))) {
+        setLike(true);
+      }
+      if (userData.savedPosts?.some((item) => String(item) === String(post._id))) {
+        setSaved(true);
+      }
+    }
+  }, [userData, post._id]);
+
+  // Handle Save Post
   const handleSave = async () => {
-    const response = await fetch(
-      `/api/user/${loggedInUser.id}/save/${post._id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    setUserData(data);
-    update();
+    setSaved(!saved)
+    try {
+      const response = await fetch(
+        `/api/user/${loggedInUser.id}/save/${post._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setUserData(data);
+      update();
+    } catch (error) {
+      console.error("Failed to save the post:", error);
+    }
   };
 
+  // Handle Like Post
   const handleLike = async () => {
-    const response = await fetch(
-      `/api/user/${loggedInUser.id}/like/${post._id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    setUserData(data);
-    update();
+    setLike(!like);
+    try {
+      const response = await fetch(
+        `/api/user/${loggedInUser.id}/like/${post._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      setUserData(data);
+      update();
+    } catch (error) {
+      console.error("Failed to like the post:", error);
+    }
   };
 
+  // Handle Delete Post
   const handleDelete = async () => {
-    await fetch(`/api/post/${post._id}/${userData._id}`, {
-      method: "DELETE",
-    });
-    update();
+    try {
+      await fetch(`/api/post/${post._id}/${loggedInUser.id}`, {
+        method: "DELETE",
+      });
+      update();
+    } catch (error) {
+      console.error("Failed to delete the post:", error);
+    }
   };
 
-  var isLiked = userData?.likedPosts?.some((item) => item._id === post._id);
-  let isSaved = userData?.savedPosts?.some((item) => item._id === post._id);
+  // Check if userData is still null or undefined, show a loading state if it is
+  if (!userData) {
+    return <p>Loading...</p>; // Show loading while data is being fetched
+  }
+
+  console.log("Is liked:", like); // Log the like state
+  console.log("Is saved:", saved); // Log the saved state
 
   return (
     <div className="w-full max-w-xl rounded-lg flex flex-col gap-4 bg-dark-1 p-5 max-sm:gap-2">
@@ -112,7 +153,7 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
 
       <div className="flex justify-between">
         <div className="flex gap-2 items-center">
-          {!isLiked ? (
+          {!like ? (
             <FavoriteBorder
               sx={{ color: "white", cursor: "pointer" }}
               onClick={handleLike}
@@ -127,7 +168,7 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
         </div>
 
         {loggedInUser.id !== creator.clerkId &&
-          (isSaved ? (
+          (saved ? (
             <Bookmark
               sx={{ color: "purple", cursor: "pointer" }}
               onClick={handleSave}
