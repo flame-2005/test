@@ -8,11 +8,18 @@ import {
 } from "@mui/icons-material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import PushPinIcon from '@mui/icons-material/PushPin';
+import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 
 const PostCard = ({ post, creator, loggedInUser, update }) => {
   const [like, setLike] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userData, setUserData] = useState(null); // Initial state is null
+
+
+  //for collage
+  
+
 
   // Fetch user data function
   const getUser = async () => {
@@ -66,7 +73,9 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
 
   // Handle Like Post
   const handleLike = async () => {
-    setLike(!like);
+    
+    if(userData.pinsCount>0){
+      setLike(!like);
     try {
       const response = await fetch(
         `/api/user/${loggedInUser.id}/like/${post._id}`,
@@ -83,6 +92,7 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
     } catch (error) {
       console.error("Failed to like the post:", error);
     }
+  }
   };
 
   // Handle Delete Post
@@ -154,38 +164,42 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
       <div className="flex justify-between">
         <div className="flex gap-2 items-center">
           {!like ? (
-            <FavoriteBorder
+            <PushPinIcon
               sx={{ color: "white", cursor: "pointer" }}
               onClick={handleLike}
             />
           ) : (
-            <Favorite
+            <PushPinIcon
               sx={{ color: "red", cursor: "pointer" }}
               onClick={handleLike}
             />
           )}
           <p className="text-light-1">{post.likes.length}</p>
         </div>
-
-        {loggedInUser.id !== creator.clerkId &&
-          (saved ? (
-            <Bookmark
-              sx={{ color: "purple", cursor: "pointer" }}
-              onClick={handleSave}
-            />
-          ) : (
-            <BookmarkBorder
-              sx={{ color: "white", cursor: "pointer" }}
-              onClick={handleSave}
-            />
-          ))}
-
         {loggedInUser.id === creator.clerkId && (
           <Delete
             sx={{ color: "white", cursor: "pointer" }}
             onClick={handleDelete}
           />
         )}
+        <div className="flex gap-2 items-center">
+          {(saved ?(
+            <LocalHospitalOutlinedIcon
+            sx={{ color: "purple", cursor: "pointer" }}
+            onClick={handleSave}
+          />
+          ) : (
+            <LocalHospitalOutlinedIcon
+              sx={{ color: "white", cursor: "pointer" }}
+              onClick={handleSave}
+            />
+          ))}
+          <p className="text-light-1">{post.tape.length}</p>
+        </div>
+
+        
+
+       
       </div>
     </div>
   );

@@ -29,19 +29,19 @@ export const POST = async (req, { params }) => {
     let postPhoto = data.get("postPhoto");
 
     if (typeof postPhoto !== "string") {
-      const bytes = await postPhoto.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const dataimg = new FormData();
+    dataimg.append("file", postPhoto);
+    dataimg.append("upload_preset", "social");
+    dataimg.append("cloud_name", "hritiksarraf");
 
-      const postPhotoPath = path.join(
-        currentWorkingDirectory,
-        "public",
-        "uploads",
-        postPhoto.name
-      );
+    let url= await fetch("https://api.cloudinary.com/v1_1/hritiksarraf/image/upload", {
+      method: "POST",
+      body: dataimg,
+    })
 
-      await writeFile(postPhotoPath, buffer);
-
-      postPhoto = `/uploads/${postPhoto.name}`;
+    let imgUrl= await url.json();
+    
+    postPhoto = imgUrl.url
     }
 
     const post = await Post.findByIdAndUpdate(

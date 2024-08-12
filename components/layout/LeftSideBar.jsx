@@ -8,6 +8,7 @@ import { Logout } from '@mui/icons-material'
 import { dark } from "@clerk/themes";
 import { useState,useEffect } from 'react'
 import Loader from "@components/Loader";
+import PushPinIcon from '@mui/icons-material/PushPin';
 
 function LeftSideBar() {
     const { user, isLoaded } = useUser();
@@ -19,7 +20,7 @@ function LeftSideBar() {
   const getUser = async () => {
     const response = await fetch(`/api/user/${user.id}`);
     const data = await response.json();
-    console.log(data)
+    
     setUserData(data);
     setLoading(false);
   };
@@ -71,6 +72,7 @@ function LeftSideBar() {
             </div>
             <hr />
             <Menu/>
+            <p className="text-light-1 mx-3 text-body-bold"><span><PushPinIcon sx={{ color: "#7857FF", cursor: "pointer" }}/></span>{userData?.pinsCount} left</p>
             <hr />
             <div className="flex gap-4 items-center">
         <UserButton appearance={{baseTheme: dark}}  afterSignOutUrl="/sign-in"/>

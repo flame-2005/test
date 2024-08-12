@@ -5,7 +5,7 @@ export const GET = async (req) => {
   try {
     await connectToDB()
 
-    const feedPosts = await Post.find().populate("creator likes").exec()
+    const feedPosts = await Post.find().populate("creator likes tape").exec()
 
     return new Response(JSON.stringify(feedPosts), { status: 200 })
   } catch (err) {

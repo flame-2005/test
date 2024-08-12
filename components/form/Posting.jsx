@@ -3,6 +3,7 @@
 import { AddPhotoAlternateOutlined } from "@mui/icons-material";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const Posting = ({ post, apiEndpoint }) => {
@@ -44,8 +45,86 @@ const Posting = ({ post, apiEndpoint }) => {
     }
   };
 
+  const handleCollage = async (data) => {
+    try{
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        body: collage,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [userData, setUserData] = useState(null)
+  const getUser = async () => {
+    try {
+      const response = await fetch(`/api/user/${loggedInUser.id}`);
+      const data = await response.json();
+      console.log("Fetched user data:", data); // Log the fetched user data for debugging
+      setUserData(data);
+      
+      console.log(data.collage);
+        if(userData.collage !=''){
+          setCollageForm(false);
+          console.log(collageForm)
+        }
+      
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+  };
+
+  // Use useEffect to fetch the user data on component mount
+  useEffect(() => {
+  getUser();
+    
+  }, []);
+
+  const [collageForm, setCollageForm] = useState(true)
+  useEffect(()=>{
+    if(userData !=null){
+      
+    if(userData.collage !=''){
+      setCollageForm(false);
+      
+    }
+  }
+  
+  },[userData]);
+
+  const [collage, setCollage] = useState('')
+
+
+
   return (
-    <form
+    <>
+    {(collageForm? (
+      <form className="flex flex-col gap-7 pb-24" onSubmit={handleCollage} action="">
+      <div>
+          <label htmlFor="collage" className="text-light-1">
+            Update your collage to make a post
+          </label>
+          <textarea
+            onChange={(e)=>{setCollage(e.target.value)}}
+            type="text"
+            rows={1}
+            placeholder="Collage name"
+            className="w-full input"
+            id="collage"
+            name='collage'
+          />
+        </div>
+        <button
+        type="submit"
+        className="py-2.5 rounded-lg mt-10 bg-purple-1 hover:bg-pink-1 text-light-1"
+      >
+        Update
+      </button>
+
+      </form>
+    ):(
+      <form
       className="flex flex-col gap-7 pb-24"
       onSubmit={handleSubmit(handlePublish)}
     >
@@ -56,7 +135,7 @@ const Posting = ({ post, apiEndpoint }) => {
         {watch("postPhoto") ? (
           // Check profile photo is a string or a file
           typeof watch("postPhoto") === "string" ? (
-            <Image
+            <img
               src={watch("postPhoto")}
               alt="post"
               width={250}
@@ -64,7 +143,7 @@ const Posting = ({ post, apiEndpoint }) => {
               className="object-cover rounded-lg"
             />
           ) : (
-            <Image
+            <img
               src={URL.createObjectURL(watch("postPhoto")[0])}
               alt="post"
               width={250}
@@ -152,6 +231,10 @@ const Posting = ({ post, apiEndpoint }) => {
         Publish
       </button>
     </form>
+    ))}
+    
+    
+    </>
   );
 };
 

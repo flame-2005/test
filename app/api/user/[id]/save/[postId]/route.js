@@ -15,12 +15,15 @@ export const POST = async (req, { params }) => {
     const isSaved = user.savedPosts.find((item) => item._id.toString() === postId)
 
     if (isSaved) {
+      post.tape = post.tape.filter((item) => item._id.toString() !== user._id.toString());
       user.savedPosts = user.savedPosts.filter((item) => item._id.toString() !== postId)
     } else {
       user.savedPosts.push(post)
+      post.tape.push(user._id);
     }
 
     await user.save()
+    await post.save();
 
     return new Response(JSON.stringify(user), { status: 200 })
   } catch (err) {

@@ -26,18 +26,14 @@ export const POST = async (req) => {
 
     let imgUrl= await url.json();
     
-
-      
-
-    
-
     postPhoto = imgUrl.url
 
     const newPost = await Post.create({
       creator: data.get("creatorId"),
       caption: data.get("caption"),
       tag: data.get("tag"),
-      postPhoto: postPhoto
+      postPhoto: postPhoto,
+      tape:[],
     })
 
     await newPost.save()
