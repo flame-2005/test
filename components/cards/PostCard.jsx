@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import PushPinIcon from '@mui/icons-material/PushPin';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
+import PlaceIcon from '@mui/icons-material/Place';
 
 const PostCard = ({ post, creator, loggedInUser, update }) => {
   const [like, setLike] = useState(false);
@@ -134,7 +135,9 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
               <p className="text-subtle-medium text-light-3">
                 @{creator.username}
               </p>
+              
             </div>
+            
           </div>
         </Link>
 
@@ -158,8 +161,15 @@ const PostCard = ({ post, creator, loggedInUser, update }) => {
       />
 
       <p className="text-base-semibold text-purple-1 max-sm:text-small-normal">
-        #{post.tag}
+        #{post.tag} <span className="text-xl m-4 text-bold">
+                <span><PlaceIcon
+              sx={{ color: "white", cursor: "pointer", fontSize:"5" }}
+              onClick={handleSave}
+            /></span>
+                {creator.collage}
+              </span>
       </p>
+      
 
       <div className="flex justify-between">
         <div className="flex gap-2 items-center">
