@@ -1,8 +1,9 @@
 import PostList from './PostList';
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const Home = async () => {
   // Fetch data on the server side
-  const response = await fetch(`http://localhost:3000/api/post`);
+  const response = await fetch(`${apiUrl}api/post`);
   const feedPost = await response.json();
 
   return (
