@@ -1,41 +1,13 @@
-"use client"; // Add this at the top
+import PostList from './PostList';
 
-import { useUser } from "@clerk/nextjs";
-import Loader from "@components/Loader";
-import PostCard from "@components/cards/PostCard";
-import { useEffect, useState } from "react";
+const Home = async () => {
+  // Fetch data on the server side
+  const response = await fetch(`http://localhost:3000/api/post`);
+  const feedPost = await response.json();
 
-const Home = () => {
-  const { user, isLoaded } = useUser();
-
-  const [loading, setLoading] = useState(true);
-  const [feedPost, setFeedPost] = useState([]);
-
-  const getFeedPost = async () => {
-    const response = await fetch("http://localhost:3000/api/post");
-    console.log(response.json())
-    const data = await response.json();
-    setFeedPost(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getFeedPost();
-  }, []);
-
-  return loading || !isLoaded ? (
-    <Loader />
-  ) : (
+  return (
     <div className="flex flex-col gap-10">
-      {feedPost.map((post) => (
-        <PostCard
-          key={post._id}
-          post={post}
-          creator={post.creator}
-          loggedInUser={user}
-          update={getFeedPost}
-        />
-      ))}
+      <PostList feedPost={feedPost} />
     </div>
   );
 };

@@ -15,7 +15,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <>
+       <ClerkProvider>
     <html lang="en">
       <body className={`${inter.className} bg-purple-2 text-light-1`}>
         <main className="flex flex-row">
@@ -32,5 +33,7 @@ export default function RootLayout({ children }) {
         
     </html>
     </ClerkProvider>
+    </>
+ 
   )
 }
